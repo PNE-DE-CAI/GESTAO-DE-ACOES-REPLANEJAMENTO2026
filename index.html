@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard URE Caieiras - Gestão de Ações REPLANEJAMENTO 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ESTILOS BASE (mantidos do código anterior) */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #1f5c8f; /* Ajustado para combinar com o logo */
+            --accent-color: #2ecc71;
+            --light-color: #ecf0f1;
+            --warning-color: #e74c3c;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* --- NOVO HEADER COM LOGO --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #1a4971);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-grow: 1;
+        }
+        .header-logo {
+            height: 70px; /* Altura ajustada para o logo */
+            width: auto;
+            object-fit: contain;
+        }
+        .header-titles {
+            line-height: 1.3;
+        }
+        .header-titles h1 {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+        .header-titles .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 8px 15px;
+            border-radius: 30px;
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        /* --- NOVO CAMPO NO FORMULÁRIO --- */
+        .form-group.ure-field {
+            background-color: #f0f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+            margin-bottom: 25px;
+        }
+        .ure-field label {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ure-field .ure-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-align: center;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        /* --- RESTANTE DOS ESTILOS (mantidos) --- */
+        .main-content { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
+        .form-section, .list-section { background-color: white; border-radius: 10px; padding: 25px; box-shadow: var(--shadow); }
+        .form-section { flex: 1; min-width: 300px; }
+        .list-section { flex: 2; min-width: 300px; }
+        h2 { color: var(--primary-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--light-color); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--primary-color); }
+        input, select, textarea { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: border 0.3s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary-color); }
+        textarea { min-height: 120px; resize: vertical; }
+        .row { display: flex; flex-wrap: wrap; gap: 15px; }
+        .row .form-group { flex: 1; min-width: 200px; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .checkbox-group input { width: auto; }
+        .btn { background-color: var(--secondary-color); color: white; border: none; padding: 14px 25px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: background-color 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn:hover { background-color: #164770; }
+        .btn-accent { background-color: var(--accent-color); }
+        .btn-accent:hover { background-color: #27ae60; }
+        .btn-warning { background-color: var(--warning-color); }
+        .btn-warning:hover { background-color: #c0392b; }
+        .actions { display: flex; justify-content: space-between; margin-top: 30px; }
+        .filter-section { margin-bottom: 25px; display: flex; gap: 15px; flex-wrap: wrap; }
+        .filter-group { flex: 1; min-width: 200px; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: var(--primary-color); color: white; text-align: left; padding: 15px; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: #f9f9f9; }
+        .status { padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        .status-completed { background-color: #d5f4e6; color: #27ae60; }
+        .status-in-progress { background-color: #e8f4fc; color: #3498db; }
+        .status-pending { background-color: #fdebd0; color: #f39c12; }
+        .actions-cell { display: flex; gap: 10px; }
+        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--primary-color); transition: color 0.3s; }
+        .icon-btn:hover { color: var(--secondary-color); }
+        .empty-state { text-align: center; padding: 40px; color: #7f8c8d; }
+        .empty-state i { font-size: 3rem; margin-bottom: 15px; color: #bdc3c7; }
+        .comments-section { margin-top: 20px; background-color: #f9f9f9; padding: 15px; border-radius: 6px; border-left: 4px solid var(--secondary-color); }
+        .comment-step { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ddd; }
+        .comment-step:last-child { margin-bottom: 0; border-bottom: none; }
+        .step-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; color: var(--primary-color); }
+        .step-number { background-color: var(--secondary-color); color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background-color: white; width: 90%; max-width: 800px; border-radius: 10px; padding: 30px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-modal { font-size: 1.5rem; cursor: pointer; color: #7f8c8d; }
+        .stats { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; }
+        .stat-card { flex: 1; min-width: 150px; background-color: white; padding: 20px; border-radius: 8px; box-shadow: var(--shadow); text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 5px; }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+        @media (max-width: 768px) {
+            .header-logo-container { flex-direction: column; text-align: center; gap: 10px; }
+            .header-titles h1 { font-size: 1.4rem; }
+            .header { flex-direction: column; gap: 15px; }
+            .row, .actions { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+            .filter-section { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-logo-container">
+                <img src="https://i.ibb.co/Cptf2d8p/LOGO-URE-CAIEIRAS-2-1.png" alt="Logo URE Caieiras" class="header-logo">
+              <div class="header-titles">
+                    <h1><i class="fas fa-chalkboard-teacher"></i> Gestão de Ações REPLANEJAMENTO 2026</h1>
+                    <div class="subtitle">Unidade Regional de Ensino - Caieiras</div>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">ES</div>
+                <div>
+                    <div>Equipe de Especialistas</div>
+                    <div style="font-size: 0.9rem;">27 professores</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="total-actions">0</div>
+                <div class="stat-label">Ações Cadastradas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="in-progress">0</div>
+                <div class="stat-label">Em Andamento</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completed">0</div>
+                <div class="stat-label">Concluídas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">27</div>
+                <div class="stat-label">Professores</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <section class="form-section">
+                <h2><i class="fas fa-plus-circle"></i> Nova Ação Formativa</h2>
+
+                <form id="actionForm">
+                    <div class="form-group ure-field">
+                        <label><i class="fas fa-school"></i> Unidade Regional de Ensino</label>
+                        <div class="ure-value">URE - CAIEIRAS</div>
+                        <p style="text-align: center; margin-top: 5px; font-size: 0.9rem; color: #666;">Todas as ações serão registradas para esta unidade.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discipline">Disciplina *</label>
+                        <select id="discipline" required>
+                            <option value="">Selecione a disciplina</option>
+                            <option value="portugues">Língua Portuguesa</option>
+                            <option value="matematica">Matemática</option>
+                            <option value="ciencias">Ciências</option>
+                            <option value="historia">História</option>
+                            <option value="geografia">Geografia</option>
+                            <option value="ingles">Inglês</option>
+                            <option value="artes">Artes</option>
+                            <option value="educacao-fisica">Educação Física</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="responsible">PEC Responsável *</label>
+                            <input type="text" id="responsible" required placeholder="Nome completo do responsável">
+                        </div>
+                        <div class="form-group">
+                            <label for="support">PEC de Apoio</label>
+                            <input type="text" id="support" placeholder="Nome dos PECs de apoio">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="actionName">Nome da Ação Formativa *</label>
+                        <input type="text" id="actionName" required placeholder="Ex: Formação em Metodologias Ativas">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Descritivo da Ação *</label>
+                        <textarea id="description" required placeholder="Descreva detalhadamente a ação formativa..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comentários por Etapa (até 5 etapas)</label>
+                        <div id="commentSteps">
+                            <div class="comment-step" data-step="1">
+                                <div class="step-header">
+                                    <span>Etapa 1</span>
+                                    <span class="step-number">1</span>
+                                </div>
+                                <textarea class="step-comment" placeholder="Comentário sobre esta etapa..."></textarea>
+                            </div>
+                        </div>
+                        <button type="button" id="addStep" class="btn" style="margin-top: 10px; background-color: #7f8c8d;">
+                            <i class="fas fa-plus"></i> Adicionar Etapa
+                        </button>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="startDate">Data de Início *</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">Data de Término *</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="startTime">Hora de Início</label>
+                            <input type="time" id="startTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">Hora de Término</label>
+                            <input type="time" id="endTime">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">Duração da Ação (horas) *</label>
+                        <input type="number" id="duration" required min="1" max="100" placeholder="Ex: 8">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Material de Apoio</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="hasMaterial">
+                            <label for="hasMaterial" style="display: inline; margin-bottom: 0;">Vai utilizar material de apoio?</label>
+                        </div>
+                        <div id="materialSection" style="display: none; margin-top: 15px;">
+                            <label for="materialDescription">Indique qual material:</label>
+                            <textarea id="materialDescription" placeholder="Descreva o material de apoio que será utilizado..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="button" id="clearForm" class="btn btn-warning">
+                            <i class="fas fa-eraser"></i> Limpar
+                        </button>
+                        <button type="submit" class="btn btn-accent">
+                            <i class="fas fa-save"></i> Salvar Ação para URE Caieiras
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="list-section">
+                <h2><i class="fas fa-list"></i> Ações Cadastradas - URE Caieiras</h2>
+
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label for="filterDiscipline">Filtrar por Disciplina</label>
+                        <select id="filterDiscipline">
+                            <option value="">Todas as disciplinas</option>
+                            <option value="portugues">Língua Portuguesa</option>
+                            <option value="matematica">Matemática</option>
+                            <option value="ciencias">Ciências</option>
+                            <option value="historia">História</option>
+                            <option value="geografia">Geografia</option>
+                            <option value="ingles">Inglês</option>
+                            <option value="artes">Artes</option>
+                            <option value="educacao-fisica">Educação Física</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterStatus">Filtrar por Status</label>
+                        <select id="filterStatus">
+                            <option value="">Todos os status</option>
+                            <option value="pending">Pendente</option>
+                            <option value="in-progress">Em andamento</option>
+                            <option value="completed">Concluído</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="actionsTable">
+                        <thead>
+                            <tr>
+                                <th>Ação Formativa</th>
+                                <th>Disciplina</th>
+                                <th>Responsável</th>
+                                <th>Período</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="actionsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Nenhuma ação cadastrada</h3>
+                    <p>Adicione sua primeira ação formativa para a Unidade Regional de Ensino Caieiras usando o formulário ao lado.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Detalhes da Ação Formativa - URE Caieiras</h2>
+                <span class="close-modal" id="closeModal">&times;</span>
+            </div>
+            <div id="modalContent">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados iniciais de exemplo (ATUALIZADOS para incluir a unidade)
+        let actions = [
+            {
+                id: 1,
+                unit: "EXEMPLO DE AÇÃO PARA O REPLANEJAMENTO", // NOVO CAMPO ADICIONADO
+                discipline: "matematica",
+                disciplineText: "Matemática",
+                responsible: "EXEMPLO: Prof. Carlos Silva",
+                support: "EXEMPLO: Prof. Ana Santos, Prof. Roberto Lima",
+                actionName: "EXEMPLO: Formação em Metodologias Ativas",
+                description: "Capacitação sobre metodologias ativas de ensino de matemática para aplicação em sala de aula.",
+                comments: [
+                    {step: 1, comment: "Planejamento inicial da formação concluído."},
+                    {step: 2, comment: "Material didático preparado e revisado."}
+                ],
+                startDate: "2023-10-15",
+                endDate: "2023-10-20",
+                startTime: "08:00",
+                endTime: "12:00",
+                duration: 20,
+                hasMaterial: true,
+                materialDescription: "Apresentação em PowerPoint, atividades impressas, material manipulável.",
+                status: "completed",
+                createdAt: "2023-10-10"
+            },
+            {
+                id: 2,
+                unit: "EXEMPLO DE AÇÃO PARA O REPLANEJAMENTO", // NOVO CAMPO ADICIONADO
+                discipline: "portugues",
+                disciplineText: "Língua Portuguesa",
+                responsible: "EXEMPLO: Prof. Maria Oliveira",
+                support: "EXEMPLO: Prof. João Pereira",
+                actionName: "EXEMPLO: Oficina de Produção Textual",
+                description: "Oficina prática para desenvolvimento de técnicas de produção textual com alunos do ensino fundamental.",
+                comments: [
+                    {step: 1, comment: "Definição dos objetivos da oficina."}
+                ],
+                startDate: "2023-11-05",
+                endDate: "2023-11-05",
+                startTime: "14:00",
+                endTime: "17:00",
+                duration: 3,
+                hasMaterial: true,
+                materialDescription: "Textos modelos, folhas de exercícios, projetor.",
+                status: "in-progress",
+                createdAt: "2023-10-25"
+            }
+        ];
+
+        // URL do Google Apps Script implantado como Web App
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzOmFiq1JBw4cTW0HbCg1RccK29fbTIAXoCSiMi8JxT7M220PHG2v41In761zA_0Kwk/exec'; // <<< SUBSTITUA ESTA URL PELA SUA URL DE DEPLOY!
+
+        // Elementos do DOM
+        const actionForm = document.getElementById('actionForm');
+        const actionsTableBody = document.getElementById('actionsTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const detailModal = document.getElementById('detailModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalTitle = document.getElementById('modalTitle');
+        const hasMaterialCheckbox = document.getElementById('hasMaterial');
+        const materialSection = document.getElementById('materialSection');
+        const addStepButton = document.getElementById('addStep');
+        const commentSteps = document.getElementById('commentSteps');
+        const clearFormButton = document.getElementById('clearForm');
+        const filterDiscipline = document.getElementById('filterDiscipline');
+        const filterStatus = document.getElementById('filterStatus');
+        const totalActionsElement = document.getElementById('total-actions');
+        const inProgressElement = document.getElementById('in-progress');
+        const completedElement = document.getElementById('completed');
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            renderActionsTable();
+            updateStats();
+
+            // Verificar se há material de apoio
+            hasMaterialCheckbox.addEventListener('change', function() {
+                materialSection.style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Adicionar etapa de comentário
+            addStepButton.addEventListener('click', addCommentStep);
+
+            // Limpar formulário
+            clearFormButton.addEventListener('click', clearForm);
+
+            // Fechar modal
+            closeModal.addEventListener('click', function() {
+                detailModal.style.display = 'none';
+            });
+
+            // Fechar modal ao clicar fora
+            window.addEventListener('click', function(event) {
+                if (event.target === detailModal) {
+                    detailModal.style.display = 'none';
+                }
+            });
+
+            // Filtrar tabela
+            filterDiscipline.addEventListener('change', renderActionsTable);
+            filterStatus.addEventListener('change', renderActionsTable);
+
+            // Configurar datas mínimas
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').min = today;
+            document.getElementById('endDate').min = today;
+        });
+
+        // Adicionar etapa de comentário
+        function addCommentStep() {
+            const stepCount = document.querySelectorAll('.comment-step').length;
+            if (stepCount >= 5) {
+                alert('Máximo de 5 etapas atingido.');
+                return;
+            }
+
+            const newStep = document.createElement('div');
+            newStep.className = 'comment-step';
+            newStep.setAttribute('data-step', stepCount + 1);
+            newStep.innerHTML = `
+                <div class="step-header">
+                    <span>Etapa ${stepCount + 1}</span>
+                    <span class="step-number">${stepCount + 1}</span>
+                </div>
+                <textarea class="step-comment" placeholder="Comentário sobre esta etapa..."></textarea>
+            `;
+
+            commentSteps.appendChild(newStep);
+        }
+
+        // ----------------------------------------------------------------------------------
+        // SALVAR AÇÃO (AJUSTADO PARA ENVIAR DADOS PARA O GOOGLE APPS SCRIPT)
+        // ----------------------------------------------------------------------------------
+        actionForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // 1. Coletar comentários das etapas
+            const commentElements = document.querySelectorAll('.comment-step');
+            const comments = [];
+            commentElements.forEach((step, index) => {
+                const comment = step.querySelector('.step-comment').value;
+                if (comment.trim() !== '') {
+                    comments.push({
+                        step: index + 1,
+                        comment: comment.trim()
+                    });
+                }
+            });
+
+            // 2. Determinar status com base nas datas
+            const startDateValue = document.getElementById('startDate').value;
+            const endDateValue = document.getElementById('endDate').value;
+            const startDate = new Date(startDateValue);
+            const endDate = new Date(endDateValue);
+            const today = new Date();
+            let status;
+
+            if (today < startDate) {
+                status = 'pending';
+            } else if (today > endDate) {
+                status = 'completed';
+            } else {
+                status = 'in-progress';
+            }
+
+            // 3. Criar objeto de dados para envio
+            const actionData = {
+                unit: "URE - CAIEIRAS",
+                discipline: document.getElementById('discipline').value,
+                disciplineText: document.getElementById('discipline').options[document.getElementById('discipline').selectedIndex].text,
+                responsible: document.getElementById('responsible').value,
+                support: document.getElementById('support').value,
+                actionName: document.getElementById('actionName').value,
+                description: document.getElementById('description').value,
+                comments: comments,
+                startDate: startDateValue,
+                endDate: endDateValue,
+                startTime: document.getElementById('startTime').value,
+                endTime: document.getElementById('endTime').value,
+                duration: parseInt(document.getElementById('duration').value),
+                hasMaterial: document.getElementById('hasMaterial').checked,
+                materialDescription: document.getElementById('hasMaterial').checked ?
+                    document.getElementById('materialDescription').value : '',
+                status: status,
+                createdAt: new Date().toISOString().split('T')[0]
+            };
+
+            // 4. Enviar dados para o Google Apps Script
+            try {
+                // Desabilitar o botão de salvar e indicar que está processando
+                const submitButton = e.submitter;
+                submitButton.disabled = true;
+                submitButton.textContent = 'Salvando...';
+
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8', 
+                    },
+                    body: JSON.stringify(actionData)
+                });
+                
+                const result = await response.json();
+
+                if (result.success) {
+                    // 5. Salvar localmente e atualizar UI (para manter a lista na página)
+                    actionData.id = actions.length > 0 ? Math.max(...actions.map(a => a.id)) + 1 : 1; 
+                    actions.push(actionData);
+                    renderActionsTable();
+                    updateStats();
+                    clearForm();
+
+                    alert(`Ação formativa salva com sucesso na URE Caieiras e na Google Planilha!`);
+                } else {
+                    throw new Error(result.message || 'Erro ao salvar no Google Planilhas.');
+                }
+            } catch (error) {
+                console.error('Erro ao enviar dados:', error);
+                alert(`Erro ao salvar a ação: ${error.message}. Verifique o console do navegador para mais detalhes.`);
+            } finally {
+                // Reabilitar o botão
+                e.submitter.disabled = false;
+                e.submitter.innerHTML = '<i class="fas fa-save"></i> Salvar Ação para URE Caieiras';
+            }
+        });
+        // ----------------------------------------------------------------------------------
+        // FIM DA FUNÇÃO SALVAR AÇÃO
+        // ----------------------------------------------------------------------------------
+
+        // Limpar formulário
+        function clearForm() {
+            actionForm.reset();
+            materialSection.style.display = 'none';
+
+            // Limpar etapas de comentário, mantendo apenas a primeira
+            const steps = document.querySelectorAll('.comment-step');
+            steps.forEach((step, index) => {
+                if (index > 0) {
+                    step.remove();
+                } else {
+                    step.querySelector('.step-comment').value = '';
+                }
+            });
+        }
+
+        // Renderizar tabela de ações
+        function renderActionsTable() {
+            const filterDisciplineValue = filterDiscipline.value;
+            const filterStatusValue = filterStatus.value;
+
+            // Filtrar ações
+            let filteredActions = actions;
+
+            if (filterDisciplineValue) {
+                filteredActions = filteredActions.filter(action => action.discipline === filterDisciplineValue);
+            }
+
+            if (filterStatusValue) {
+                filteredActions = filteredActions.filter(action => action.status === filterStatusValue);
+            }
+
+            // Atualizar tabela
+            if (filteredActions.length === 0) {
+                actionsTableBody.innerHTML = '';
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+
+                let tableHTML = '';
+                filteredActions.forEach(action => {
+                    // Formatar data
+                    const startDateFormatted = formatDate(action.startDate);
+                    const endDateFormatted = formatDate(action.endDate);
+
+                    // Status
+                    let statusClass, statusText;
+                    switch(action.status) {
+                        case 'pending':
+                            statusClass = 'status-pending';
+                            statusText = 'Pendente';
+                            break;
+                        case 'in-progress':
+                            statusClass = 'status-in-progress';
+                            statusText = 'Em andamento';
+                            break;
+                        case 'completed':
+                            statusClass = 'status-completed';
+                            statusText = 'Concluído';
+                            break;
+                    }
+
+                    tableHTML += `
+                        <tr>
+                            <td><strong>${action.actionName}</strong></td>
+                            <td>${action.disciplineText}</td>
+                            <td>${action.responsible}</td>
+                            <td>${startDateFormatted} a ${endDateFormatted}</td>
+                            <td><span class="status ${statusClass}">${statusText}</span></td>
+                            <td class="actions-cell">
+                                <button class="icon-btn" onclick="viewAction(${action.id})" title="Ver detalhes">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="icon-btn" onclick="editAction(${action.id})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="icon-btn" onclick="deleteAction(${action.id})" title="Excluir">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                actionsTableBody.innerHTML = tableHTML;
+            }
+        }
+
+        // Visualizar ação (ATUALIZADO para mostrar a unidade)
+        function viewAction(id) {
+            const action = actions.find(a => a.id === id);
+            if (!action) return;
+
+            // Formatar datas
+            const startDateFormatted = formatDate(action.startDate);
+            const endDateFormatted = formatDate(action.endDate);
+            const createdAtFormatted = formatDate(action.createdAt);
+
+            // Status
+            let statusText;
+            switch(action.status) {
+                case 'pending': statusText = 'Pendente'; break;
+                case 'in-progress': statusText = 'Em andamento'; break;
+                case 'completed': statusText = 'Concluído'; break;
+            }
+
+            // Comentários por etapa
+            let commentsHTML = '';
+            if (action.comments && action.comments.length > 0) {
+                action.comments.forEach(comment => {
+                    commentsHTML += `
+                        <div class="comment-step">
+                            <div class="step-header">
+                                <span>Etapa ${comment.step}</span>
+                                <span class="step-number">${comment.step}</span>
+                            </div>
+                            <p>${comment.comment}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                commentsHTML = '<p>Nenhum comentário registrado.</p>';
+            }
+
+            // Material de apoio
+            let materialHTML = '';
+            if (action.hasMaterial) {
+                materialHTML = `
+                    <p><strong>Material de apoio:</strong> Sim</p>
+                    <p><strong>Descrição do material:</strong> ${action.materialDescription}</p>
+                `;
+            } else {
+                materialHTML = '<p><strong>Material de apoio:</strong> Não</p>';
+            }
+
+            // Construir conteúdo do modal (COM A UNIDADE)
+            modalTitle.textContent = action.actionName;
+            modalContent.innerHTML = `
+                <div class="comments-section">
+                    <h3><i class="fas fa-school"></i> Informações da Unidade</h3>
+                    <p><strong>Unidade Regional de Ensino:</strong> ${action.unit}</p>
+
+                    <h3>Detalhes da Ação Formativa</h3>
+                    <p><strong>Disciplina:</strong> ${action.disciplineText}</p>
+                    <p><strong>PEC Responsável:</strong> ${action.responsible}</p>
+                    <p><strong>PEC de Apoio:</strong> ${action.support || 'Não informado'}</p>
+                    <p><strong>Descrição:</strong> ${action.description}</p>
+
+                    <h4 style="margin-top: 20px;">Comentários por Etapa</h4>
+                    ${commentsHTML}
+
+                    <h4 style="margin-top: 20px;">Datas e Horários</h4>
+                    <p><strong>Período:</strong> ${startDateFormatted} a ${endDateFormatted}</p>
+                    <p><strong>Horário:</strong> ${action.startTime || 'Não definido'} às ${action.endTime || 'Não definido'}</p>
+                    <p><strong>Duração:</strong> ${action.duration} horas</p>
+
+                    <h4 style="margin-top: 20px;">Material de Apoio</h4>
+                    ${materialHTML}
+
+                    <h4 style="margin-top: 20px;">Outras Informações</h4>
+                    <p><strong>Status:</strong> ${statusText}</p>
+                    <p><strong>Cadastrado em:</strong> ${createdAtFormatted}</p>
+                </div>
+            `;
+
+            detailModal.style.display = 'flex';
+        }
+
+        // Editar ação
+        function editAction(id) {
+            alert(`Funcionalidade de edição para ação ${id} da URE Caieiras seria implementada aqui.`);
+            // Em uma aplicação real, aqui preencheríamos o formulário com os dados da ação
+        }
+
+        // Excluir ação
+        function deleteAction(id) {
+            if (confirm('Tem certeza que deseja excluir esta ação formativa da URE Caieiras?')) {
+                actions = actions.filter(action => action.id !== id);
+                renderActionsTable();
+                updateStats();
+            }
+        }
+
+        // Atualizar estatísticas
+        function updateStats() {
+            totalActionsElement.textContent = actions.length;
+
+            const inProgressCount = actions.filter(action => action.status === 'in-progress').length;
+            const completedCount = actions.filter(action => action.status === 'completed').length;
+
+            inProgressElement.textContent = inProgressCount;
+            completedElement.textContent = completedCount;
+        }
+
+        // Funções auxiliares
+        function formatDate(dateString) {
+            if (!dateString) return 'Não definida';
+            const date = new Date(dateString);
+            // Adicionando +1 dia para compensar o fuso horário se necessário (cuidado com timezone)
+            // date.setDate(date.getDate() + 1); 
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        // Inicializar algumas datas
+        document.getElementById('startDate').value = new Date().toISOString().split('T')[0];
+        const nextWeek = new Date();
+        nextWeek.setDate(nextWeek.getDate() + 7);
+        document.getElementById('endDate').value = nextWeek.toISOString().split('T')[0];
+    </script>
+</body>
+</html>
